@@ -1,0 +1,8 @@
+# Ignore todos os diretórios
+*/
+
+# Exceto o diretório específico que você quer manter
+!Projects/
+
+# Também force o Git a rastrear os arquivos dentro deste diretório
+!Projects/**
