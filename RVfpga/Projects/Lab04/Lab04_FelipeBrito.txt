@@ -1,0 +1,104 @@
+Felipe Faustino Brito - 2021007366
+
+
+
+/* ----------------------- Exercicios 1 e 2 ------------------------*/
+
+#if defined(D_NEXYS_A7)
+   #include "bsp_printf.h"
+   #include "bsp_mem_map.h"
+   #include "bsp_version.h"
+#else
+   PRE_COMPILED_MSG("no platform was defined")
+#endif
+
+#include "psp_api.h"
+
+
+typedef struct {
+    unsigned char R;
+    unsigned char G;
+    unsigned char B;
+} RGB;
+
+
+#define N 256
+#define M 256
+extern unsigned char TheScream_256x256[]; //VanGogh_128x128 para a outra imagem
+RGB ColourImage[N][M];
+unsigned char GreyImage[N][M];
+
+
+void initColourImage(RGB image[N][M]) {
+    int i,j;
+
+    for (i=0;i<N;i++)
+        for (j=0; j<M; j++) {
+            image[i][j].R = TheScream_256x256[(i*M + j)*3];
+            image[i][j].G = TheScream_256x256[(i*M + j)*3 + 1];
+            image[i][j].B = TheScream_256x256[(i*M + j)*3 + 2];
+        }
+}
+
+
+extern int ColourToGrey_Pixel(int R, int G, int B);
+
+void ColourToGrey(RGB Colour[N][M], unsigned char Grey[N][M]) {
+    int i,j;
+    
+    for (i=0;i<N;i++)
+        for (j=0; j<M; j++)
+            Grey[i][j] =  ColourToGrey_Pixel(Colour[i][j].R, Colour[i][j].G, Colour[i][j].B); 
+}
+
+int brancos;
+int pretos;
+void ContadorDePixelsBrancosEPretos(unsigned char mat[N][M]) {
+    int i,j;
+
+    for (i=0;i<N;i++) {
+        for (j=0; j<M; j++) {
+            if ( mat[i][j] > 235) brancos++;
+            if ( mat[i][j] < 20)  pretos++;
+        }
+    }
+}
+
+
+int main(void) {
+    // Create an NxM matrix using the input image
+    initColourImage(ColourImage);
+
+    // Transform Colour Image to Grey Image
+    ColourToGrey(ColourImage,GreyImage);
+
+    // Initialize Uart
+    uartInit();
+    // Print message on the serial output
+    printfNexys("Created Grey Image");
+
+    brancos=0;
+    pretos=0;
+    ContadorDePixelsBrancosEPretos(GreyImage);
+    // Print numbers on the serial output
+    printfNexys("Brancos: %d\n", brancos);
+    printfNexys("Pretos: %d\n", pretos);
+
+    /* -----------VanGogh_128x128-------------*/
+    /*
+        Brancos: 24
+        Pretos: 141
+    */
+
+    /* -----------TheScream_256x256-------------*/
+    /*
+        Brancos: 34
+        Pretos: 21256
+    */
+
+    while(1);
+
+    return 0;
+}
+
+
