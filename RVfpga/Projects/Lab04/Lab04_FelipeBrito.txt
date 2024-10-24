@@ -22,8 +22,8 @@ typedef struct {
 } RGB;
 
 
-#define N 256
-#define M 256
+#define N 256 //128
+#define M 256 //128
 extern unsigned char TheScream_256x256[]; //VanGogh_128x128 para a outra imagem
 RGB ColourImage[N][M];
 unsigned char GreyImage[N][M];
@@ -86,8 +86,8 @@ int main(void) {
 
     /* -----------VanGogh_128x128-------------*/
     /*
-        Brancos: 24
-        Pretos: 141
+        Brancos: 12
+        Pretos: 15
     */
 
     /* -----------TheScream_256x256-------------*/
